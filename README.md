@@ -1,5 +1,8 @@
 # Autonomous Robotic Claw
 
+<img width="250" height="392" alt="Screenshot 2026-02-13 at 9 10 17 PM" src="https://github.com/user-attachments/assets/7012db33-f988-43aa-be21-89f05320db6e" />
+<img width="250" height="348" alt="Screenshot 2026-02-13 at 9 10 24 PM" src="https://github.com/user-attachments/assets/a45c4c0b-7875-4662-932c-171922395a6c" />
+<img width="250" height="459" alt="Screenshot 2026-02-13 at 9 10 39 PM" src="https://github.com/user-attachments/assets/d30747ca-0681-4470-9b1b-4547c6a56496" />
 
 ## 📌 Overview
 An autonomous robotic claw system designed to detect and retrieve everyday objects with high precision. Built as a first-year engineering design project for UBC Applied Science (APSC), this system utilizes an Arduino microcontroller, ultrasonic distance sensing, and servo actuation to operate entirely hands-free. The project placed in the top 25% of all first-year APSC design teams.
