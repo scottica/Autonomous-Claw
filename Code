@@ -1,3 +1,55 @@
+Scottica
+scottica
+🐒 not well
+
+This is the start of the #code-and-such channel. 
+sara — 2025-01-13, 3:22 PM
+//Servo Instructions
+#include <Servo.h>		//Includes the Servo Instruction Library
+Servo myservo;			//Declares an object
+#define SERVOPIN 9		//names a constant. No direct connection to servo yet.
+
+uint8_t degree;			//Variable declaration for servo position
+//Datatype: uint8_t is an unsigned integer within 8 bits. [0,255]
+
+void setup() {
+  //Setup function happens ONE TIME, at the very beginning of the program.
+  
+  Serial.begin(9600); 	//Opens terminal on Arduino. It is called Serial Monitor generally speaking.
+  while (!Serial);		//Waits for the serial to start before proceeding.
+  
+  myservo.attach(SERVOPIN);	//Connects the Servo Object to the program, and declares which pin it's connected by
+}
+
+void loop() {
+  //Loop function repeats until the program is reset, a terminating statement is read, or the board loses power.
+  
+  degree = random(0,180);	//Sets to random integer within bounds [0,180]
+  myservo.write(degree);	//Sends the random integer to the servo motor
+  Serial.println(degree);	//Displays the random integer on the Serial Monitor
+  delay(1000);				//Waits 1000 ms (1 second)
+}
+
+dazzling_snicket_tumelo1.ino
+2 KB
+https://www.tinkercad.com/things/4hOYicWdXho/editel?sharecode=vEj2Fl1ATfZIC5rCS_V3nrjB0vXUZlAIi4k_FSKscsQ 
+Tinkercad
+Login - Tinkercad
+Image
+sara — 2025-01-17, 10:45 AM
+https://www.canva.com/design/DAGcetsque0/39898CiYvXFZ9ebIMLrBAw/edit?utm_content=DAGcetsque0&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
+itsanantk — 2025-01-30, 6:58 PM
+Just putting the arduino code here if we ever need it
+#include <Servo.h>
+int TRIG_blue  = 10; 
+int ECHO_pink  = 9;  
+int SERVO_orange = 3;  
+Servo servo;
+long duration = 0;
+
+message.txt
+3 KB
+﻿
 #include <Servo.h>
 int TRIG_blue  = 10; 
 int ECHO_pink  = 9;  
@@ -5,12 +57,18 @@ int SERVO_orange = 3;
 Servo servo;
 long duration = 0;
 long cm =  0;
+int state = 0;
+int timer = 0;
 
 void setup() {      
   pinMode(TRIG_blue, OUTPUT); 
   pinMode(ECHO_pink, INPUT);  
   servo.attach(SERVO_orange);   
-  servo.write(0);
+  servo.write(180);
+  Serial.begin(9600);
+  state = 1; // Open
+  timer = 0;
+
 }
 
 void loop() {
@@ -21,14 +79,94 @@ void loop() {
   
   duration = pulseIn(ECHO_pink, HIGH);
   cm = (duration/2)/28.5;
-
-  if(cm < 100){
-    servo.write(0);
+  Serial.println(" cm:");
+  Serial.println(cm);
+  
+  
+  // While lowering and about to close claw
+  if (cm <= 10){
+    if (state == 1){
+      state = 2; // Closed
+      timer = 0;
+    }
   }
   
-  else if(cm > 200){
-    servo.write(180); 
+  // Wait to see if were still down on the object
+  if (state == 2){
+    if (cm <= 10){
+      timer ++;
+      if (timer >= 5){ // How long to wait until we close the claw
+        servo.write(0);
+        state = 3;
+        timer = 0;
+      }
+    
+    }
+    // If we go back up, then reset the cycle
+    else{
+      state = 1;
+    }
+  }
+ 
+  
+  // While closed and transfering objects
+  if (state == 3){
+    timer ++;
+    if (timer >= 15){ // How long to wait until we allow the claw to open
+      if (cm <= 10){ 
+        servo.write(180);
+        state = 4; // Cooldown
+        timer = 0;
+      }
+    }
+  }
+  
+  // Cooldown
+  if (state == 4){
+    timer ++;
+    if (timer >= 10){ // How long we wait before resettting the cycle
+      state = 1;
+      timer = 0;
+    }
+  }
+  
+  Serial.println(" Timer: ");
+  Serial.println(timer);
+  Serial.println(" State:");
+  Serial.println(state);
+
+/*
+  if(cm <= 10){
+    for (int i = 180*3; i >= 0; i--){
+      if (i % 3 == 0){  
+        Serial.print(i);
+        servo.write(i/3); 
+        Serial.print(" degree:");
+      }
+    }  
   }
 
-  delay (1000);
+  else if(cm >= 20){
+    for (int i = 0; i <= 180*3; i++){
+      if (i % 3 == 0){  
+        Serial.print(i);
+        servo.write(i/3); 
+        Serial.print(" degree:");
+      }
+    }
+  }
+
+ */
+  
+/*
+  if (cm < 10){
+    servo.write(0);
+  }
+
+  else if (cm > 20){
+    servo.write(180);
+  }
+  */
+  
+  delay (500);
 }
